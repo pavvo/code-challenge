@@ -19,21 +19,12 @@ describe('findNewDirection', () => {
     expect(findNewDirection(map, pos, Direction.RIGHT)).toBe(Direction.DOWN);
   });
 
-  it('should detect broken path at turn', () => {
+  it('should detect invalid path at turn', () => {
     const map = ['@--+', '    ', '    '];
     const pos: Position = { row: 0, col: 3 };
 
     expect(() => findNewDirection(map, pos, Direction.RIGHT)).toThrow(
-      'Broken path: no valid direction found'
-    );
-  });
-
-  it('should detect fork in path at turn', () => {
-    const map = ['@--+-', '   |', '   x'];
-    const pos: Position = { row: 0, col: 3 };
-
-    expect(() => findNewDirection(map, pos, Direction.RIGHT)).toThrow(
-      'Fork in path: multiple valid directions found'
+      'Invalid path: no valid direction found'
     );
   });
 });

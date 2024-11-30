@@ -13,7 +13,7 @@ export function findPath(map: Array<string>): Path {
   let direction = findInitialDirection(map, startPos);
 
   let currentPos = startPos;
-  let letters = '';
+  let letters = new Set();
   let path = '@';
 
   while (true) {
@@ -24,11 +24,14 @@ export function findPath(map: Array<string>): Path {
     path += char;
 
     if (char === 'x') {
-      return { letters, path };
+      return { letters: [...letters].join('').toString(), path };
     }
 
     if (/[A-Z]/.test(char)) {
-      letters += char;
+      if (!letters.has(char)) {
+        letters = letters.add(char);
+      }
+      direction = findNewDirection(map, nextPos, direction);
     } else if (char === '+') {
       direction = findNewDirection(map, nextPos, direction);
     }

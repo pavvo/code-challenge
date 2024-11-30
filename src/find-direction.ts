@@ -33,12 +33,27 @@ export function findNewDirection(
     }
   });
 
+  // At a '+', must be able to turn (continuing straight means it's a fake turn)
+  const currentChar = map[pos.row][pos.col];
+  if (
+    currentChar === '+' &&
+    validDirections.length === 1 &&
+    validDirections[0] === currentDirection
+  ) {
+    throw new Error('Invalid path: no valid direction found');
+  }
+
+  // Continue in same direction if valid
+  if (validDirections.includes(currentDirection)) {
+    return currentDirection;
+  }
+
   if (validDirections.length === 0) {
-    throw new Error('Broken path: no valid direction found from start');
+    throw new Error('Invalid path: no valid direction found');
   }
 
   if (validDirections.length > 1) {
-    throw new Error('Fork in path: multiple valid directions found from start');
+    throw new Error('Fork in path: multiple valid directions found');
   }
 
   return validDirections[0];
@@ -49,9 +64,21 @@ function isValidNextChar(char: string, direction: Direction): boolean {
 
   if (/[A-Z]/.test(char) || char === '+' || char === 'x') return true;
 
-  return direction === Direction.UP || direction === Direction.DOWN
-    ? char === '|'
-    : char === '-';
+  // For vertical directions (UP/DOWN), allow | path
+  if (
+    (direction === Direction.UP || direction === Direction.DOWN) &&
+    char === '|'
+  )
+    return true;
+
+  // For horizontal directions (LEFT/RIGHT), allow - path
+  if (
+    (direction === Direction.LEFT || direction === Direction.RIGHT) &&
+    char === '-'
+  )
+    return true;
+
+  return false;
 }
 
 function getOppositeDirection(direction: Direction): Direction {
