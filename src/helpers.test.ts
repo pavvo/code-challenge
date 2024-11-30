@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
-import { validateMap } from './helpers';
+import { validateInBounds, validateMap } from './helpers';
+
+import { type Position } from './types';
 
 describe('validateMap', () => {
   it('should validate a correct map and return start position', () => {
@@ -98,5 +100,42 @@ describe('validateMap', () => {
 
     const startPos = validateMap(map);
     expect(startPos).toEqual({ row: 0, col: 2 });
+  });
+});
+
+describe('validateInBounds', () => {
+  const map = ['@--x', '    ', '    '];
+
+  it('should not throw for valid position', () => {
+    const pos: Position = { row: 0, col: 0 };
+    expect(() => validateInBounds(pos, map)).not.toThrow();
+  });
+
+  it('should throw for negative row', () => {
+    const pos: Position = { row: -1, col: 0 };
+    expect(() => validateInBounds(pos, map)).toThrow(
+      'Path leads out of bounds'
+    );
+  });
+
+  it('should throw for row beyond bounds', () => {
+    const pos: Position = { row: 3, col: 0 };
+    expect(() => validateInBounds(pos, map)).toThrow(
+      'Path leads out of bounds'
+    );
+  });
+
+  it('should throw for negative column', () => {
+    const pos: Position = { row: 0, col: -1 };
+    expect(() => validateInBounds(pos, map)).toThrow(
+      'Path leads out of bounds'
+    );
+  });
+
+  it('should throw for column beyond bounds', () => {
+    const pos: Position = { row: 0, col: 4 };
+    expect(() => validateInBounds(pos, map)).toThrow(
+      'Path leads out of bounds'
+    );
   });
 });

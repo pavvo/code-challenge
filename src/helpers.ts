@@ -39,3 +39,14 @@ export function validateMap(map: Array<string>): Position {
 
   return startPos;
 }
+
+export function validateInBounds(pos: Position, map: Array<string>): void {
+  if (
+    pos.row < 0 ||
+    pos.row >= map.length ||
+    pos.col < 0 ||
+    pos.col >= map[pos.row].length
+  ) {
+    throw new Error('Path leads out of bounds');
+  }
+}
