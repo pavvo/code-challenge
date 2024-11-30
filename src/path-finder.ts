@@ -1,19 +1,35 @@
-import { validateMap } from './helpers';
+import { validateInBounds, validateMap } from './helpers';
 
 import { findInitialDirection } from './initial-direction';
+
+import { moveInDirection } from './move';
 
 import type { Path } from './types';
 
 export function findPath(map: Array<string>): Path {
-  // Get the start position and validate the map
   const startPos = validateMap(map);
-
   const initialDirection = findInitialDirection(map, startPos);
 
-  console.log(`Initial direction: ${initialDirection}`);
+  let currentPos = startPos;
+  let letters = '';
+  let path = '@';
 
-  return {
-    letters: '',
-    path: '',
-  };
+  while (true) {
+    const nextPos = moveInDirection(currentPos, initialDirection);
+
+    validateInBounds(nextPos, map);
+
+    const char = map[nextPos.row][nextPos.col];
+    path += char;
+
+    if (char === 'x') {
+      return { letters, path };
+    }
+
+    if (/[A-Z]/.test(char)) {
+      letters += char;
+    }
+
+    currentPos = nextPos;
+  }
 }
